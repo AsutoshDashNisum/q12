@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Grades Table</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    thead {
+      background-color: #3498db;
+      color: white;
+    }
+
+    thead th {
+      padding: 12px;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    tbody {
+      font-size: 1rem;
+    }
+
+    tbody td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    tbody tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    tfoot {
+      background-color: #f8f8f8;
+    }
+
+    tfoot td {
+      padding: 12px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .footer {
+      text-align: right;
+    }
+
+    .search-bar {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .top-mark {
+      background-color: #ffeb3b;
+      font-weight: bold;
+    }
+
+    .editable {
+      cursor: pointer;
+      background-color: #f9f9f9;
+    }
+
+    .editable:hover {
+      background-color: #e1e1e1;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <input type="text" class="search-bar" id="search" placeholder="Search by student name or subject..." oninput="filterTable()">
+    
+    <table id="gradesTable">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Student Name</th>
+          <th onclick="sortTable(1)">Subject</th>
+          <th onclick="sortTable(2)">Marks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="editable" contenteditable="true">John Doe</td>
+          <td class="editable" contenteditable="true">Mathematics</td>
+          <td class="editable" contenteditable="true">85</td>
+        </tr>
+        <tr>
+          <td class="editable" contenteditable="true">Jane Smith</td>
+          <td class="editable" contenteditable="true">Science</td>
+          <td class="editable" contenteditable="true">92</td>
+        </tr>
+        <tr>
+          <td class="editable" contenteditable="true">Sam Wilson</td>
+          <td class="editable" contenteditable="true">English</td>
+          <td class="editable" contenteditable="true">78</td>
+        </tr>
+        <tr>
+          <td class="editable" contenteditable="true">Alice Brown</td>
+          <td class="editable" contenteditable="true">History</td>
+          <td class="editable" contenteditable="true">88</td>
+        </tr>
+        <tr>
+          <td class="editable" contenteditable="true">Bob White</td>
+          <td class="editable" contenteditable="true">Geography</td>
+          <td class="editable" contenteditable="true">90</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2" class="footer">Average Marks:</td>
+          <td id="averageMarks" class="footer">86.6</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <script>
+    function sortTable(columnIndex) {
+      const table = document.getElementById("gradesTable");
+      const rows = Array.from(table.rows).slice(1, -1);
+      const sortedRows = rows.sort((rowA, rowB) => {
+        const cellA = rowA.cells[columnIndex].textContent.trim();
+        const cellB = rowB.cells[columnIndex].textContent.trim();
+        if (columnIndex === 2) {
+          return parseInt(cellA) - parseInt(cellB);
+        }
+        return cellA.localeCompare(cellB);
+      });
+      sortedRows.forEach(row => table.appendChild(row));
+    }
+
+    function filterTable() {
+      const searchQuery = document.getElementById('search').value.toLowerCase();
+      const rows = document.querySelectorAll('#gradesTable tbody tr');
+      rows.forEach(row => {
+        const studentName = row.cells[0].textContent.toLowerCase();
+        const subject = row.cells[1].textContent.toLowerCase();
+        if (studentName.includes(searchQuery) || subject.includes(searchQuery)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    function highlightTopMarks() {
+      const rows = document.querySelectorAll('#gradesTable tbody tr');
+      let maxMarks = 0;
+      rows.forEach(row => {
+        const marks = parseInt(row.cells[2].textContent);
+        if (marks > maxMarks) {
+          maxMarks = marks;
+        }
+      });
+      rows.forEach(row => {
+        const marks = parseInt(row.cells[2].textContent);
+        if (marks === maxMarks) {
+          row.classList.add('top-mark');
+        } else {
+          row.classList.remove('top-mark');
+        }
+      });
+    }
+
+    highlightTopMarks();
+  </script>
+
+</body>
+</html>
